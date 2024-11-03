@@ -1,12 +1,6 @@
-import {
-  create,
-  list,
-  remove,
-  update,
-} from "../controllers/server.controller.js";
+import { login, createUser } from "../controllers/userController.js";
+
 export const Routes = (server) => {
-  server.post("/Cadastro", create);
-  server.delete("/UserData/:id", remove);
-  server.patch("/Update/:id", update);
-  server.get("/List", list);
+  server.post("/login", login);
+  server.post("/register", createUser);
 };
