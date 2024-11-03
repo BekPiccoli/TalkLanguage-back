@@ -95,10 +95,8 @@ export async function list(req, res) {
   }
 }
 export async function login(req, res) {
-  console.log("Efetuando login");
   try {
     const { email, password } = req.body;
-    console.log(email, password);
     const userExist = await prisma.user.findUnique({
       where: {
         email,
@@ -108,7 +106,7 @@ export async function login(req, res) {
     if (!userExist || !(password === userExist.password)) {
       res.status(400).json({ message: "Senha ou email inválidos" });
     } else {
-      res.status(200).json({ message: "Login com sucesso", email });
+      res.status(200).json({ message: "Login com sucesso", userExist });
     }
   } catch (err) {
     console.error(err);
