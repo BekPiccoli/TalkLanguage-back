@@ -22,8 +22,8 @@ model User {
   primaryLanguage String?
   progress  Progress[]
   rewards   Reward[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime?       @default(now())
+  updatedAt DateTime?       @updatedAt
   dailyGoal Int? // Meta diária de tempo de estudo (em minutos)
   streak    Int            @default(0)
   lastLogin DateTime?
