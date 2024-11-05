@@ -1,5 +1,5 @@
 // routes/private.js
-import { list, update, remove } from "../controllers/userController.js";
+import { list, update, remove, updateUserPreferences } from "../controllers/userController.js";
 import { addUserLanguage, listUserLanguages } from "../controllers/languageController.js";
 import { addExercise, listExercisesByGroup } from "../controllers/exerciseController.js";
 import { updateProgress } from "../controllers/progressController.js";
@@ -27,7 +27,7 @@ export const Routes = (server) => {
   server.delete("/users/:id", remove);
 
   // Rotas de idiomas
-  server.post("/users/:userId/languages", addUserLanguage);
+  server.post("/users/:userId/languages", updateUserPreferences);
   server.get("/users/:userId/languages", listUserLanguages);
 
   // Rotas de exercícios
