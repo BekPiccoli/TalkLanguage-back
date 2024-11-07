@@ -95,6 +95,25 @@ export async function remove(req, res) {
     }
   }
 
+  export async function listUserById(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      if (!user) {
+        res.status(404).json({ message: "Usuário não encontrado" });
+      } else {
+        res.status(200).json({ user });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+
 
   export async function login(req, res) {
     try {
