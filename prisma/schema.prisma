@@ -34,8 +34,8 @@ model User {
 
 model ExerciseGroup {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  language    String // Nome do idioma, ex: "Inglês", "Espanhol"
-  name        String // Nome do grupo de exercícios
+  language    String? // Nome do idioma, ex: "Inglês", "Espanhol"
+  name        String? // Nome do grupo de exercícios
   description String? // Descrição opcional do grupo
   exercises   Exercise[] // Lista de exercícios pertencentes a este grupo
   createdAt   DateTime   @default(now())
