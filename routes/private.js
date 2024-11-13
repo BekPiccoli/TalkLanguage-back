@@ -1,10 +1,13 @@
 // routes/private.js
+import { uploadImageUser } from "../middleware/uploadImage.js";
+
 import {
   list,
   update,
   remove,
   updateUserPreferences,
   listUserById,
+  uploadImage,
 } from "../controllers/userController.js";
 import {
   addUserLanguage,
@@ -20,20 +23,6 @@ import {
   listExercisesGroupByLanguage,
   listAllExercisesGroup,
 } from "../controllers/exerciseGroupController.js";
-
-// TODO: Implementar middleware de autenticação
-
-// function autenticate(req, res, next) {
-//   // Middleware de autenticação
-//   const token = req.headers.authorization;
-
-//   console.log("Token recebido:", token);
-
-//   if (!token) return res.status(401).json({ message: "Token não fornecido" });
-//   // Aqui você pode adicionar lógica para validar o token
-
-//   next();
-// }
 
 export const Routes = (server) => {
   // Rotas para usuários autenticados
@@ -60,4 +49,5 @@ export const Routes = (server) => {
   server.get("/rewards/:userId", listRewards);
 
   // Rotas para upload de fotos
+  server.post("/upload-image", uploadImageUser.single("image"), uploadImage);
 };

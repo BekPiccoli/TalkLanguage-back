@@ -173,3 +173,17 @@ export async function updateUserPreferences(req, res) {
     res.status(500).json({ message: "Erro ao atualizar usuário" });
   }
 }
+export async function uploadImage(req, res) {
+  try {
+    console.log(req.file);
+    if (!req.file) {
+      return res.status(400).json({ message: "Nenhum arquivo foi enviado" });
+    }
+    res.status(200).json({ message: "Sucesso", file: req.file });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Erro ao fazer upload", error: err.message });
+  }
+}
