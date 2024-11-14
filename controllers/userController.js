@@ -174,12 +174,14 @@ export async function updateUserPreferences(req, res) {
   }
 }
 export async function uploadImage(req, res) {
+  console.log(req.file);
   try {
-    console.log(req.file);
     if (!req.file) {
       return res.status(400).json({ message: "Nenhum arquivo foi enviado" });
     }
-    res.status(200).json({ message: "Sucesso", file: req.file });
+    res
+      .status(200)
+      .json({ message: "Upload realizado com sucesso!", file: req.file });
   } catch (err) {
     console.error(err);
     res

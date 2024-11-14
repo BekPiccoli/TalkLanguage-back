@@ -1,4 +1,5 @@
 import multer from "multer";
+
 export const uploadImageUser = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -9,15 +10,15 @@ export const uploadImageUser = multer({
     },
   }),
   fileFilter: (req, file, cb) => {
-    const extensionImg = [
-      "image/img",
-      "image/png",
-      "image/jpg",
-      "image/jpeg",
-    ].find((acceptFomater) => acceptFomater == file.mimetype);
-    if (extensionImg) {
-      return cb(null, true);
+    const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          "Tipo de arquivo não suportado. Apenas imagens são permitidas."
+        )
+      );
     }
-    return cb(null, false);
   },
 });
