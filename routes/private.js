@@ -1,6 +1,5 @@
 // routes/private.js
 import { uploadImageUser } from "../middleware/uploadImage.js";
-
 import {
   list,
   update,
@@ -16,8 +15,9 @@ import {
 import {
   addExercise,
   listExercisesByGroup,
+  getExerciseById,
 } from "../controllers/exerciseController.js";
-import { updateProgress } from "../controllers/progressController.js";
+import { saveProgress, getProgressByGroup, getPerformance } from "../controllers/progressController.js";
 import { addReward, listRewards } from "../controllers/rewardController.js";
 import {
   listExercisesGroupByLanguage,
@@ -37,12 +37,16 @@ export const Routes = (server) => {
 
   // Rotas de exercícios
   server.post("/exercises", addExercise);
-  server.get("/exercises/:exerciseGroupId", listExercisesByGroup);
+  server.get("/exercises/:groupId", listExercisesByGroup);
+  server.get("/exercise/:exerciseId", getExerciseById);
   server.get("/exercisesGroup", listExercisesGroupByLanguage);
   server.get("/exercisesGroup/all", listAllExercisesGroup);
 
   // Rotas de progresso
-  server.patch("/progress", updateProgress);
+  server.post("/progress", saveProgress);
+  server.get("/progress/:groupId/:userId", getProgressByGroup);
+  server.get("/performance/:userId", getPerformance);
+
 
   // Rotas de recompensas
   server.post("/rewards", addReward);

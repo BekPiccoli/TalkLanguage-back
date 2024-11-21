@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function createUser(req, res) {
-  console.log("Entrou no createUser");
-
   try {
     const { name, email, password, age } = req.body;
     const emailExist = await prisma.user.findUnique({ where: { email } });
@@ -11,8 +9,6 @@ export async function createUser(req, res) {
       const newUser = await prisma.user.create({
         data: { name, email, password, age },
       });
-
-      console.log("Usuário  criado com sucesso", newUser);
       res
         .status(201)
         .json({ message: "Usuário criado com sucesso", user: newUser });
@@ -37,7 +33,6 @@ export async function remove(req, res) {
       res
         .status(404)
         .json({ message: "Usuário não existe ou já foi deletado." });
-      console.log("Tentativa de exluir um usuáro inexistente");
     } else {
       await prisma.user.delete({
         where: {
@@ -88,17 +83,14 @@ export async function list(req, res) {
   try {
     const data = await prisma.user.findMany();
     res.status(200).json({ data });
-    console.log("Usuários listados:", data);
   } catch (err) {
     console.error(err);
   }
 }
 
 export async function listUserById(req, res) {
-  console.log("Fechou no fetch");
   try {
     const { id } = req.params;
-    console.log(id);
     const user = await prisma.user.findUnique({
       where: {
         id: id,
@@ -117,14 +109,12 @@ export async function listUserById(req, res) {
 
 export async function login(req, res) {
   try {
-    console.log("Entrou no login");
     const { email, password } = req.body;
     const userExist = await prisma.user.findUnique({
       where: {
         email,
       },
     });
-    console.log("UserExist: ", userExist);
     if (!userExist || !(password === userExist.password)) {
       res.status(400).json({ message: "Senha ou email inválidos" });
     } else {
@@ -137,16 +127,9 @@ export async function login(req, res) {
 }
 
 export async function updateUserPreferences(req, res) {
-  console.log("CHEGOU NA ATUALIOZXAO");
   try {
     const { userId } = req.params; // Assumindo que o ID do usuário vem nos parâmetros da URL
     const { primaryLanguage, level, purpose } = req.body; // Dados para atualizar no usuário
-
-    console.log("chegouuuuuuuu no addUserLanguage");
-    console.log(userId);
-    console.log(primaryLanguage);
-    console.log(level);
-    console.log(purpose);
 
     // Verifica se o usuário existe
     const user = await prisma.user.findUnique({ where: { id: userId } });

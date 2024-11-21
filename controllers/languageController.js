@@ -3,18 +3,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function addUserLanguage(req, res) {
-  console.log("Entrou no addUserLanguage");
-
   try {
     const { userId } = req.params;
     const { language, level, purpose } = req.body;
-
-    console.log("chegouuuuuuuu no addUserLanguage");
-    console.log(userId);
-    console.log(language);
-    console.log(level);
-    console.log(purpose);
-
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado" });

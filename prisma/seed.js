@@ -1,7 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+async function clearDatabase() {
+  console.log("Limpando banco de dados...");
+  await prisma.exercise.deleteMany({});
+  await prisma.exerciseGroup.deleteMany({});
+  console.log("Banco de dados limpo.");
+}
+
+
 async function main() {
+  await clearDatabase();
   try {
     // Criar grupos de exercícios para Inglês
     const englishGroupsData = [

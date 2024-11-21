@@ -24,15 +24,36 @@ export async function addExercise(req, res) {
   }
 }
 
+export async function getExerciseById(req, res) {
+  try {
+    const { exerciseId } = req.params;
+    const exercise = await prisma.exercise.findUnique({
+      where: { id: exerciseId },
+    });
+
+    if (!exercise) {
+      return res.status(404).json({ message: "Exercício não encontrado." });
+    }
+
+    res.status(200).json(exercise);
+  } catch (error) {
+    console.error("Erro ao buscar exercício:", error);
+    res.status(500).json({ message: "Erro ao buscar exercício." });
+  }
+}
+
+
 export async function listExercisesByGroup(req, res) {
   try {
-    const { exerciseGroupId } = req.params;
+    const { groupId } = req.params;
     const exercises = await prisma.exercise.findMany({
-      where: { exerciseGroupId },
+      where: {
+        exerciseGroupId: groupId,
+      },
     });
     res.status(200).json({ exercises });
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao listar exercícios do grupo:", err);
     res.status(500).json({ message: "Erro ao listar exercícios do grupo" });
   }
 }
