@@ -117,3 +117,99 @@ export async function getPerformance(req, res) {
     res.status(500).json({ message: "Erro ao buscar desempenho." });
   }
 }
+
+export async function getOverallProgress(req, res) {
+  try {
+    const { userId } = req.params;
+
+    // Verificar se o usuário existe e tem idioma principal
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { primaryLanguage: true },
+    });
+
+    if (!user || !user.primaryLanguage) {
+      console.error("Erro: Usuário não encontrado ou sem idioma principal.");
+      return res.status(404).json({ message: "Usuário não encontrado ou sem idioma principal." });
+    }
+
+    const primaryLanguage = user.primaryLanguage;
+
+    // Buscar todos os exercícios da língua principal do usuário
+    const exercises = await prisma.exercise.findMany({
+      where: {
+        exerciseGroup: {
+          language: primaryLanguage,
+        },
+      },
+    });
+
+    const totalExercises = exercises.length;
+
+    if (totalExercises === 0) {
+      return res.status(200).json({ overallProgress: 0 });
+    }
+
+    // Contar os exercícios respondidos corretamente pelo usuário
+    const correctExercisesCount = await prisma.progress.count({
+      where: {
+        userId,
+        correct: true,
+        exercise: {
+          exerciseGroup: {
+            language: primaryLanguage,
+          },
+        },
+      },
+    });
+
+    // Calcular o progresso geral
+    const overallProgress = ((correctExercisesCount / totalExercises) * 100).toFixed(2);
+
+    res.status(200).json({ overallProgress: parseFloat(overallProgress) });
+  } catch (error) {
+    console.error("Erro ao buscar desempenho:", error);
+    res.status(500).json({ message: "Erro ao buscar desempenho." });
+  }
+}
+
+
+export async function getLastGroupProgress(req, res) {
+  const { userId } = req.params;
+
+  try {
+    const lastProgress = await prisma.progress.findFirst({
+      where: { userId },
+      orderBy: { updatedAt: "desc" },
+      include: { exercise: { include: { exerciseGroup: true } } },
+    });
+
+    if (!lastProgress) {
+      return res.status(200).json({ lastGroup: null, hasPendingQuestions: false });
+    }
+
+    const groupId = lastProgress.exercise.exerciseGroupId;
+
+    const totalQuestions = await prisma.exercise.count({
+      where: { exerciseGroupId: groupId },
+    });
+
+    const answeredCorrectly = await prisma.progress.count({
+      where: {
+        userId,
+        exercise: { exerciseGroupId: groupId },
+        correct: true,
+      },
+    });
+
+    const hasPendingQuestions = answeredCorrectly < totalQuestions;
+
+    res.status(200).json({
+      lastGroup: lastProgress.exercise.exerciseGroup,
+      hasPendingQuestions,
+    });
+  } catch (error) {
+    console.error("Erro ao buscar progresso do último grupo:", error);
+    res.status(500).json({ message: "Erro ao buscar progresso do último grupo." });
+  }
+}
