@@ -38,10 +38,6 @@ export async function updateDailyGoal(req, res) {
 
   export async function updateStreakOnLogin(req, res) {
     const { userId } = req.params;
-  
-    console.log("updateStreakOnLogin");
-    console.log("User: " + userId);
-    console.log(req.body);
     try {
       const user = await prisma.user.findUnique({ where: { id: userId } });
   

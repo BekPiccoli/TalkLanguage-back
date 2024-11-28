@@ -47,8 +47,6 @@ export async function getProgressByGroup(req, res) {
 }
 
 export async function getPerformance(req, res) {
-  console.log("getPerformance");
-
   try {
     const { userId } = req.params;
 
