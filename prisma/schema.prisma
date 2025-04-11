@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 datasource db {
-  provider = "mongodb"
-  url      = "mongodb+srv://bernardopiccoli:xwcmbqfdreCnfLOv@unobd.dq2yx.mongodb.net/unodb?retryWrites=true&w=majority&appName=unobd"
+  provider = "postgresql"
+  url      = "postgresql://postgres:postgres@localhost:5432/talklanguage"
 }
 
 generator client {
@@ -14,72 +8,71 @@ generator client {
 }
 
 model User {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  email     String         @unique
-  name      String?
-  password  String
-  age       Int?
-  primaryLanguage String?
-  progress  Progress[]
-  rewards   Reward[]
-  createdAt DateTime?       @default(now())
-  updatedAt DateTime?       @updatedAt
-  dailyGoal Int? // Meta diária de tempo de estudo (em minutos)
-  streak    Int            @default(0)
-  lastLogin DateTime?
-  level     Level?
-  purpose   String?
-  proficiencyTests ProficiencyTest[]
+  id                String             @id @default(uuid()) @db.Uuid
+  email             String             @unique
+  name              String?
+  password          String
+  age               Int?
+  primaryLanguage   String?
+  progress          Progress[]
+  rewards           Reward[]
+  createdAt         DateTime?          @default(now())
+  updatedAt         DateTime?          @updatedAt
+  dailyGoal         Int?
+  streak            Int                @default(0)
+  lastLogin         DateTime?
+  level             Level?
+  purpose           String?
+  proficiencyTests  ProficiencyTest[]
 }
 
 model ExerciseGroup {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  language    String? // Nome do idioma, ex: "Inglês", "Espanhol"
-  name        String? // Nome do grupo de exercícios
-  description String? // Descrição opcional do grupo
-  exercises   Exercise[] // Lista de exercícios pertencentes a este grupo
+  id          String     @id @default(uuid()) @db.Uuid
+  language    String?
+  name        String?
+  description String?
+  exercises   Exercise[]
   createdAt   DateTime   @default(now())
 }
 
 model Exercise {
-  id              String        @id @default(auto()) @map("_id") @db.ObjectId
-  exerciseGroup   ExerciseGroup @relation(fields: [exerciseGroupId], references: [id])
-  exerciseGroupId String        @db.ObjectId
-  type            ExerciseType // Tipo de exercício: vocabulário, compreensão auditiva, etc.
-  content         String // Conteúdo do exercício (exemplo: pergunta ou frase)
-  options         String[] // Opções de resposta (para perguntas de múltipla escolha)
-  correctAnswer   String // Resposta correta
-  audio           String? // URL do áudio para exercícios com reprodução de áudio
+  id              String         @id @default(uuid()) @db.Uuid
+  exerciseGroup   ExerciseGroup  @relation(fields: [exerciseGroupId], references: [id])
+  exerciseGroupId String         @db.Uuid
+  type            ExerciseType
+  content         String
+  options         String[]
+  correctAnswer   String
+  audio           String?
   Progress        Progress[]
 }
 
 model Progress {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String   @db.ObjectId
-  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  exerciseId String   @db.ObjectId
-  status     String   // Status do exercício
-  correct    Boolean? // Adicione este campo se necessário
-  updatedAt  DateTime @updatedAt
+  id          String    @id @default(uuid()) @db.Uuid
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @db.Uuid
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId  String    @db.Uuid
+  status      String
+  correct     Boolean?
+  updatedAt   DateTime  @updatedAt
 }
 
-
 model ProficiencyTest {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  user           User         @relation(fields: [userId], references: [id])
-  userId         String       @db.ObjectId
-  dateTaken      DateTime     @default(now())
-  score          Float?       // Pontuação obtida no teste
-  result         String       // Resultado do teste, ex: "Aprovado", "Precisa de mais prática"
+  id        String   @id @default(uuid()) @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.Uuid
+  dateTaken DateTime @default(now())
+  score     Float?
+  result    String
 }
 
 model Reward {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid()) @db.Uuid
   user        User     @relation(fields: [userId], references: [id])
-  userId      String   @db.ObjectId
-  description String // Descrição da recompensa, ex: "Conquista de 7 dias consecutivos"
-  points      Int // Pontos ganhos
+  userId      String   @db.Uuid
+  description String
+  points      Int
   dateEarned  DateTime @default(now())
 }
 

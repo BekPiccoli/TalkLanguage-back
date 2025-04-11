@@ -3,10 +3,14 @@ const prisma = new PrismaClient();
 
 async function clearDatabase() {
   console.log("Limpando banco de dados...");
-  await prisma.progress.deleteMany({});
-  await prisma.exercise.deleteMany({});
-  await prisma.exerciseGroup.deleteMany({});
-  console.log("Banco de dados limpo.");
+  try {
+    await prisma.progress.deleteMany({});
+    await prisma.exercise.deleteMany({});
+    await prisma.exerciseGroup.deleteMany({});
+    console.log("Banco de dados limpo.");
+  } catch (error) {
+    console.error("Erro ao limpar banco:", error);
+  }
 }
 
 
